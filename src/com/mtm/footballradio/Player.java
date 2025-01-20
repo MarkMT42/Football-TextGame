@@ -14,7 +14,11 @@ public class Player {
     // Constructor
     public Player(int playerId, boolean isGoalkeeper, char teamChar) {
         id = playerId;
-        name = Names.getRandomPlayerName() + " (" + teamChar + " " + playerId + ")";
+        if (playerId < 10){
+            name = Names.getRandomPlayerName() + " (" + teamChar + "  " + playerId + ")";
+        } else {
+            name = Names.getRandomPlayerName() + " (" + teamChar + " " + playerId + ")";
+        }
         IW1 = (int) (Math.random()*26)+25;
         IW2 = (int) (Math.random()*26)+25;
         IW3 = (int) (Math.random()*26)+25;

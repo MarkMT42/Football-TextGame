@@ -41,10 +41,9 @@ public class Game {
         if (speed == 0) {
             speed = 1;
         }
-        team1 = new Team('A', 1);
-        team2 = new Team('B', 1);
+        team1 = new Team('*', 1);
+        team2 = new Team('#', 1);
         this.goals = new ArrayList<>();
-        // TODO Display TEAMS and PLAYERS wait for promt to start
         team1.displayTeam();
         team2.displayTeam();
         System.out.print("Platzieren Sie Ihre Wetten, dann Bitte drücken Sie Enter um fortzufahren...");
@@ -62,9 +61,9 @@ public class Game {
         // Select random Player to start kickoff
         ballCarrier = attackingTeam.getRandomPlayer();
         // DISPLAY START
-        System.out.print("\n" + ballCarrier.name + " von " + attackingTeam.longName + " hat Anstoß!");
         Match(0,45, speed);
-        System.out.print("\nPfeife!!! Es ist Halbzeit!\n"  + team1.name + " - " + team2.name + "\n     " + team1.score + " : " + team2.score + "\n\n");
+        System.out.print("\n>>> Pfeife!!! Es ist Halbzeit!\n");
+        Game.displayStanding(team1,team2);
         Thread.sleep(5000 / speed);
         // Swap Teams & Reset Bonus
         bonus = 0;
@@ -78,19 +77,19 @@ public class Game {
         // Select random Player to start kickoff TODO Refactor START
         ballCarrier = attackingTeam.getRandomPlayer();
         // DISPLAY START
-        System.out.println("Die zweite Halbzeit beginnt!");
-        System.out.print("\n" + ballCarrier.name + " von " + attackingTeam.longName + " hat Anstoß!");
+        System.out.println(">>> Die zweite Halbzeit beginnt!");
         Match(45,45, speed);
         // DISPLAY END RESULT TODO Refactor END
-        System.out.print("\nPfeife!!! Das Spiel ist vorbei!\nEndergebnis:\n"  + team1.name + " - " + team2.name + "\n     " + team1.score + " : " + team2.score + "\n");
+        System.out.print("\n>>> Pfeife!!! Das Spiel ist vorbei!\n");
+        Game.displayStanding(team1,team2);
         if (team1.score > team2.score) {
-            System.out.print("\n" + team1.longName + " hat gewonnen!\n\n");
+            System.out.print("\n>>> " + team1.longName + " hat gewonnen!\n\n");
         } else if (team2.score > team1.score){
-            System.out.print("\n" + team2.longName + " hat gewonnen!\n\n");
+            System.out.print("\n>>> " + team2.longName + " hat gewonnen!\n\n");
         } else {
-            System.out.print("\nEs ist ein Unentschieden!");
+            System.out.print("\n>>> Es ist ein Unentschieden!");
             Thread.sleep(2000 / speed);
-            System.out.print("\nEs beginnt eine 2-mal 15-minütige Nachspielzeit.\n");
+            System.out.print("\n>>> Es beginnt eine 2-mal 15-minütige Nachspielzeit.\n");
             Thread.sleep(2000 / speed);
             attackingTeam = startingTeam;
             if (team1.equals(attackingTeam)) {
@@ -100,11 +99,11 @@ public class Game {
             }
             ballCarrier = attackingTeam.getRandomPlayer();
             // DISPLAY START
-            System.out.print(ballCarrier.name + " von " + attackingTeam.longName + " hat Anstoß!");
             Match(90,15, speed);
-            System.out.print("\nPfeife!!! Die erste Hälfte der Verlängerung ist beendet!\n"  + team1.name + " - " + team2.name + "\n     " + team1.score + " : " + team2.score + "\n\n");
+            System.out.print("\n>>> Pfeife!!! Die erste Hälfte der Verlängerung ist beendet!\n");
+            Game.displayStanding(team1,team2);
             Thread.sleep(2000 / speed);
-            System.out.print("\nDie zweite Halbzeit der Verlängerung beginnt!\n");
+            System.out.print("\n>>> Die zweite Halbzeit der Verlängerung beginnt!\n");
             Thread.sleep(2000 / speed);
             // Swap Teams & Reset Bonus
             bonus = 0;
@@ -118,30 +117,30 @@ public class Game {
             // Select random Player to start kickoff TODO Refactor START
             ballCarrier = attackingTeam.getRandomPlayer();
             // DISPLAY START
-            System.out.print("\n" + ballCarrier.name + " von " + attackingTeam.longName + " hat Anstoß!");
             Match(105,15, speed);
             // DISPLAY END RESULT TODO Refactor END
-            System.out.print("\nPfeife!!! Ende der Verlängerung!\nEndergebnis:\n"  + team1.name + " - " + team2.name + "\n     " + team1.score + " : " + team2.score + "\n");
+            System.out.print("\n>>> Pfeife!!! Ende der Verlängerung!\n");
+            Game.displayStanding(team1,team2);
             if (team1.score > team2.score) {
-                System.out.print("\n" + team1.longName + " hat gewonnen!\n\n");
+                System.out.print("\n>>> " + team1.longName + " hat gewonnen!\n\n");
             } else if (team2.score > team1.score){
-                System.out.print("\n" + team2.longName + " hat gewonnen!\n\n");
+                System.out.print("\n>>> " + team2.longName + " hat gewonnen!\n\n");
             } else {
-                System.out.print("\nEs ist ein Unentschieden!\n");
-                // TODO Penalty Shoot
+                System.out.print("\n>>> Es ist ein Unentschieden!\n");
                 Thread.sleep(2000 / speed);
-                System.out.print("\nDas Elfmeterschießen beginnt!.\n");
+                System.out.print("\n>>> Das Elfmeterschießen beginnt!.\n");
                 Thread.sleep(2000 / speed);
                 Penalty(120, speed);
             }
-            System.out.print("\nEnde des Elfmeterschießens!\nEndergebnis:\n"  + team1.name + " - " + team2.name + "\n     " + team1.score + " : " + team2.score + "\n");
+            System.out.print("\n>>> Ende des Elfmeterschießens!\n");
+            Game.displayStanding(team1,team2);
             if (team1.score > team2.score) {
                 System.out.print("\n" + team1.longName + " hat gewonnen!\n\n");
             } else if (team2.score > team1.score){
                 System.out.print("\n" + team2.longName + " hat gewonnen!\n\n");
             } else {
-                System.out.print("\nEs ist ein Unentschieden!\n");
-                // This should not happen!
+                System.out.print("\n>>> Es ist ein Unentschieden!\n");
+                // This should never happen!
             }
         }
 
@@ -162,6 +161,7 @@ public class Game {
     }
 
     public void Match(int startingMinute, int length, int speed) throws InterruptedException {
+        System.out.print("\n>>> " + ballCarrier.name + " von " + attackingTeam.longName + " hat Anstoß!");
         for (int minutes = startingMinute; minutes <= startingMinute+length; minutes ++) {
             Thread.sleep(1000 / speed);
             if (minutes < 10) {
@@ -200,24 +200,21 @@ public class Game {
                         System.out.print(" Er schießt sehr gut! Der Ball fliegt an der Verteidigung vorbei, aber  " + opponentKeeper.name + " fängt den Ball!");
                     }
                     // In either way, the Teams are swapped and the bonus is reset
-                    // Change possession of the Ball
+                    // Keeper passes the Ball to one of his Teammates
                     ballCarrier = defendingTeam.getRandomPlayer();
-                    // System.out.print("\n" + ballCarrier.name + " hat den Ball!");
-                } else if (isDefenseSuccessful) {
+                } else if (isOffenseSuccessful && isDefenseSuccessful) {
                     // Shooter succeeds & Defense succeeds (TODO SAME AS NEXT, BUT DIFFERENT COMMENT NEEDED)
                     System.out.print(" Schöner Schuss! Aber " + opponent.name + " blockt den Schuss und schnappt sich den Ball!");
                     ballCarrier = opponent;
-                    // System.out.print("\n" + ballCarrier.name + " hat den Ball!");
                 } else if (!isOffenseSuccessful && isDefenseSuccessful) {
                     // Shooter Fails & Defense succeeds (TODO SAME AS PREVIOUS, BUT DIFFERENT COMMENT NEEDED)
                     System.out.print(" Er schießt daneben, und " + opponent.name + " nimmt den Ball!");
                     ballCarrier = opponent;
-                    // System.out.print("\n" + ballCarrier.name + " hat den Ball!");
                 } else if (!isOffenseSuccessful && !isDefenseSuccessful) {
                     // Both Fail
                     System.out.print(" Er verfehlt den Schuss, kann aber den Ball halten.");
                     bonus = 0; // After a Shot, reset Bonus, even if he keeps the ball
-                    continue;
+                    continue; // Not to swap the Teams
                 }
                 // Swap Teams
                 temporaryTeam = defendingTeam;
@@ -317,7 +314,7 @@ public class Game {
             isShootingSuccessful = sortedPlayers1.get(counter).performAction(Player.ActionType.Shoot, 0);
             isCatchingSuccessful = goalKeeper2.performAction(Player.ActionType.Catch, 0);
             if (isShootingSuccessful && !isCatchingSuccessful) {
-                System.out.print("\nGOOOAAAL!!!");
+                System.out.print(" GOOOAAAL!!!");
                 team1.score++;
                 sortedPlayers1.get(counter).goals++;
                 goals.add(new Goal(rounds, "Tor " + team1.score + ":" + team2.score, sortedPlayers1.get(counter).name, team1.longName, true));
@@ -338,7 +335,7 @@ public class Game {
             isShootingSuccessful = sortedPlayers2.get(counter).performAction(Player.ActionType.Shoot, 0);
             isCatchingSuccessful = goalKeeper1.performAction(Player.ActionType.Catch, 0);
             if (isShootingSuccessful && !isCatchingSuccessful) {
-                System.out.print("\nGOOOAAAL!!!");
+                System.out.print(" GOOOAAAL!!!");
                 team2.score++;
                 sortedPlayers2.get(counter).goals++;
                 goals.add(new Goal(rounds, "Tor " + team1.score + ":" + team2.score, sortedPlayers2.get(counter).name, team2.longName, true));
@@ -354,11 +351,7 @@ public class Game {
                 // if all Players have shot, start again
                 counter = 0;
             }
-            // Check for draw
-            if (team1.score != team2.score) {
-                draw = false;
-            }
-        } while (rounds < 132 || (!draw && rounds >= 132)); // FIXME if after 5 Players from each Team have taken a shot and it is not a draw then exit
+        } while (rounds < 132 || (team1.score == team2.score && rounds >= 132)); // FIXME if after 5 Players from each Team have taken a shot and it is not a draw then exit
     }
 
     static class Goal {
@@ -378,7 +371,16 @@ public class Game {
         }
     }
 
-    public void displayGameEvents(){
+    // DISPLAY STANDING
+    static void displayStanding(Team team1, Team team2) {
+        System.out.println("\n┌--------------------------------┬--------------------------------┐");
+        System.out.printf("%1s %30s %1s %-30s %1s","│", team1.longName, "│", team2.longName, "│\n");
+        System.out.println("├--------------------------------┼--------------------------------┤");
+        System.out.printf("%1s %30s %1s %-30s %1s","│", team1.score, "│", team2.score, "│\n");
+        System.out.println("└--------------------------------┴--------------------------------┘\n");
+    }
+
+    static void displayGameEvents(){
         // TODO refactor prints here
         // there are many ways to make commentary more varied and built from random blocks
         // if this is done, many actions which are the same for different results could be refactored too

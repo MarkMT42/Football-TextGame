@@ -89,7 +89,7 @@ public class Team {
 
     // DISPLAY Team Members with skills and goals
     public void displayTeamWithResults() {
-        System.out.println("\n" + this.name + " - " + this.longName);
+        System.out.println("\n" + this.name + " - " + this.longName + " - Tore: " + this.score);
         System.out.println("┌------------------------------------┬-------┬-------┬--------┬-------┬-------┬-------┐");
         System.out.println("│         Name (Team Nummer)         │ Schuß │ Pass  │Dribbeln│Abwehr │Fangen │ Tore  │");
         System.out.println("├------------------------------------┼-------┼-------┼--------┼-------┼-------┼-------┤");
