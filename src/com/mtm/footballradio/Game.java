@@ -10,6 +10,7 @@ import java.util.Scanner;
 // TODO SLEEP ADJUSTMENTS
 // TODO REFACTOR
 // TODO CHANGE TEAM A & B TO CLUB NAME SHORTS FOR DISPLAYS
+// TODO Language EN & DE SWITCH
 // TODO Later Implement AI voice for the text :)
 // TODO ALL OTHER TODOs
 
@@ -190,12 +191,10 @@ public class Game {
                     // opponent Team's Goal Keeper has a chance to Catch the Ball
                     opponentKeeper = defendingTeam.getGoalKeeper();
                     if (!opponentKeeper.performAction(Player.ActionType.Catch, 0)){
-                        System.out.print("\nGOOOAAAL!!! " + ballCarrier.name + " von " + attackingTeam.longName + " hat ein Tor geschossen!");
+                        System.out.print(" GOOOAAAL!!! " + ballCarrier.name + " von " + attackingTeam.longName + " hat ein Tor geschossen!");
                         attackingTeam.score++;
                         ballCarrier.goals++;
                         goals.add(new Goal(minutes, "Tor " + team1.score + ":" + team2.score, ballCarrier.name, attackingTeam.longName, false));
-                        bonus = 0;
-                        continue;
                     } else {
                         // Goal Keeper catches the ball!
                         System.out.print(" Er schießt sehr gut! Der Ball fliegt an der Verteidigung vorbei, aber  " + opponentKeeper.name + " fängt den Ball!");
@@ -217,7 +216,7 @@ public class Game {
                 } else if (!isOffenseSuccessful && !isDefenseSuccessful) {
                     // Both Fail
                     System.out.print(" Er verfehlt den Schuss, kann aber den Ball halten.");
-                    bonus = 0;
+                    bonus = 0; // After a Shot, reset Bonus, even if he keeps the ball
                     continue;
                 }
                 // Swap Teams
@@ -232,7 +231,6 @@ public class Game {
                     // Dribble forward
                     System.out.print(" " + ballCarrier.name + " dribbelt nach vorne und weicht " + opponent.name + " aus.");
                     bonus = bonus + 5;
-                    continue;
                 } else if (isOffenseSuccessful && isDefenseSuccessful) {
                     // Dribble forward but tackled (TODO SAME AS MANY OTHER, BUT DIFFERENT COMMENT)
                     System.out.print(" " + ballCarrier.name + " dribbelt nach vorne, aber " + opponent.name + " greift ihn an und schnappt sich den Ball!");
@@ -243,7 +241,6 @@ public class Game {
                     temporaryTeam = defendingTeam;
                     defendingTeam = attackingTeam;
                     attackingTeam = temporaryTeam;
-                    continue;
                 } else if (!isOffenseSuccessful && isDefenseSuccessful) {
                     // Dribble Fail, opponent takes the Ball (TODO SAME AS MANY OTHER, BUT DIFFERENT COMMENT)
                     System.out.print(" " + ballCarrier.name + " kann sich nicht vorrücken, und " + opponent.name + " nimmt ihm den Ball weg!");
@@ -254,11 +251,9 @@ public class Game {
                     temporaryTeam = defendingTeam;
                     defendingTeam = attackingTeam;
                     attackingTeam = temporaryTeam;
-                    continue;
                 } else if (!isOffenseSuccessful && !isDefenseSuccessful) {
                     // Both fail
                     System.out.print(" " + ballCarrier.name + " kann nicht nach vorne dribbeln, aber " + opponent.name + " kann ihm den Ball nicht abgrätschen.");
-                    continue;
                 }
             } else {
                 // Ball Carrier Passes the Ball to a Teammate
@@ -270,7 +265,6 @@ public class Game {
                     ballCarrier = receivingPlayer;
                     // System.out.print("\n" + ballCarrier.name + " hat den Ball!");
                     bonus = bonus + 5;
-                    continue;
                 } else if (isOffenseSuccessful && isDefenseSuccessful) {
                     // Good Pass, but it is intercepted (TODO SAME AS MANY OTHER, BUT DIFFERENT COMMENT)
                     System.out.print(" " + ballCarrier.name + " passt den Ball zu " + receivingPlayer.name + ", aber " + opponent.name + " fängt den Ball ab!");
@@ -281,7 +275,6 @@ public class Game {
                     temporaryTeam = defendingTeam;
                     defendingTeam = attackingTeam;
                     attackingTeam = temporaryTeam;
-                    continue;
                 } else if (!isOffenseSuccessful && isDefenseSuccessful) {
                     // Pass Fail, opponent takes the Ball (TODO SAME AS MANY OTHER, BUT DIFFERENT COMMENT)
                     System.out.print(" " + ballCarrier.name + " versucht, den Ball zu " + receivingPlayer.name + " passen, aber er verfehlt und "+ opponent.name + " fängt den Ball ab.");
@@ -292,11 +285,9 @@ public class Game {
                     temporaryTeam = defendingTeam;
                     defendingTeam = attackingTeam;
                     attackingTeam = temporaryTeam;
-                    continue;
                 } else if (!isOffenseSuccessful && !isDefenseSuccessful) {
                     // Both fail
                     System.out.print(" " + ballCarrier.name + " versucht, den Ball zu " + receivingPlayer.name + " passen, aber er verfehlt. " + opponent.name + " versucht, den Ball abzufangen, aber der Ball springt zu " + ballCarrier.name + " zurück!");
-                    continue;
                 }
             }
         }
