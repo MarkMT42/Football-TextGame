@@ -38,7 +38,7 @@ public class Game {
 
     // Constructor
     public Game(int speed) throws InterruptedException, IOException {
-        if (speed == 0) {
+        if (speed == 0) { // To avoid division by 0
             speed = 1;
         }
         team1 = new Team('*', 1);
@@ -46,7 +46,7 @@ public class Game {
         this.goals = new ArrayList<>();
         team1.displayTeam();
         team2.displayTeam();
-        System.out.print("Platzieren Sie Ihre Wetten, dann Bitte drücken Sie Enter um fortzufahren...");
+        System.out.print("Platzieren Sie Ihre Wetten, dann Bitte drücken Sie Enter um fortzufahren...\n\n");
         System.in.read();
         // Determine starting Team
         if (coinFlip()) {
@@ -131,31 +131,21 @@ public class Game {
                 System.out.print("\n>>> Das Elfmeterschießen beginnt!.\n");
                 Thread.sleep(2000 / speed);
                 Penalty(120, speed);
+                System.out.print("\n>>> Ende des Elfmeterschießens!\n");
             }
-            System.out.print("\n>>> Ende des Elfmeterschießens!\n");
             Game.displayStanding(team1,team2);
             if (team1.score > team2.score) {
-                System.out.print("\n" + team1.longName + " hat gewonnen!\n\n");
+                System.out.print("\n>>> " + team1.longName + " hat gewonnen!\n\n");
             } else if (team2.score > team1.score){
-                System.out.print("\n" + team2.longName + " hat gewonnen!\n\n");
+                System.out.print("\n>>> " + team2.longName + " hat gewonnen!\n\n");
             } else {
                 System.out.print("\n>>> Es ist ein Unentschieden!\n");
                 // This should never happen!
             }
         }
 
-        // DISPLAY GOALS
-        if (goals.size() > 0) {
-            System.out.println("Tore:");
-            for (Goal goal : goals) {
-                if (goal.isPenalty) {
-                    System.out.println(goal.minute + ". Spielminute, " + goal.standing + ", " + goal.playerName + ", " + goal.clubName + ", Elfmeter");
-                } else {
-                    System.out.println(goal.minute + ". Spielminute, " + goal.standing + ", " + goal.playerName + ", " + goal.clubName);
-                }
-            }
-            System.out.println("\n");
-        }
+        // DISPLAY GOALS // TODO Refactor to function, DISPLAY Table, condition is not needed anymore
+        Game.displayGoals(goals);
         team1.displayTeamWithResults();
         team2.displayTeamWithResults();
     }
@@ -171,7 +161,6 @@ public class Game {
             } else {
                 System.out.print("\n" + minutes + ". Minute - " + team1.score + ":" + team2.score + " -");
             }
-            // TODO ? only display this after change of ballCarrier - System.out.print(" - " + ballCarrier.name + " hat den Ball!");
             // Determine Opponent
             opponent = defendingTeam.getRandomPlayer();
             // It is more efficient to calculate Defensive Action's Success beforehand
@@ -194,7 +183,7 @@ public class Game {
                         System.out.print(" GOOOAAAL!!! " + ballCarrier.name + " von " + attackingTeam.longName + " hat ein Tor geschossen!");
                         attackingTeam.score++;
                         ballCarrier.goals++;
-                        goals.add(new Goal(minutes, "Tor " + team1.score + ":" + team2.score, ballCarrier.name, attackingTeam.longName, false));
+                        goals.add(new Goal(minutes, team1.score + ":" + team2.score, ballCarrier.name, attackingTeam.longName, false));
                     } else {
                         // Goal Keeper catches the ball!
                         System.out.print(" Er schießt sehr gut! Der Ball fliegt an der Verteidigung vorbei, aber  " + opponentKeeper.name + " fängt den Ball!");
@@ -232,7 +221,6 @@ public class Game {
                     // Dribble forward but tackled (TODO SAME AS MANY OTHER, BUT DIFFERENT COMMENT)
                     System.out.print(" " + ballCarrier.name + " dribbelt nach vorne, aber " + opponent.name + " greift ihn an und schnappt sich den Ball!");
                     ballCarrier = opponent;
-                    // System.out.print("\n" + ballCarrier.name + " hat den Ball!");
                     // Swap Teams
                     bonus = 0;
                     temporaryTeam = defendingTeam;
@@ -242,7 +230,6 @@ public class Game {
                     // Dribble Fail, opponent takes the Ball (TODO SAME AS MANY OTHER, BUT DIFFERENT COMMENT)
                     System.out.print(" " + ballCarrier.name + " kann sich nicht vorrücken, und " + opponent.name + " nimmt ihm den Ball weg!");
                     ballCarrier = opponent;
-                    // System.out.print("\n" + ballCarrier.name + " hat den Ball!");
                     // Swap Teams
                     bonus = 0;
                     temporaryTeam = defendingTeam;
@@ -260,13 +247,11 @@ public class Game {
                     // Manages to Pass
                     System.out.print(" " + ballCarrier.name + " passt den Ball zu " + receivingPlayer.name + ".");
                     ballCarrier = receivingPlayer;
-                    // System.out.print("\n" + ballCarrier.name + " hat den Ball!");
                     bonus = bonus + 5;
                 } else if (isOffenseSuccessful && isDefenseSuccessful) {
                     // Good Pass, but it is intercepted (TODO SAME AS MANY OTHER, BUT DIFFERENT COMMENT)
                     System.out.print(" " + ballCarrier.name + " passt den Ball zu " + receivingPlayer.name + ", aber " + opponent.name + " fängt den Ball ab!");
                     ballCarrier = opponent;
-                    // System.out.print("\n" + ballCarrier.name + " hat den Ball!");
                     // Swap Teams
                     bonus = 0;
                     temporaryTeam = defendingTeam;
@@ -276,7 +261,6 @@ public class Game {
                     // Pass Fail, opponent takes the Ball (TODO SAME AS MANY OTHER, BUT DIFFERENT COMMENT)
                     System.out.print(" " + ballCarrier.name + " versucht, den Ball zu " + receivingPlayer.name + " passen, aber er verfehlt und "+ opponent.name + " fängt den Ball ab.");
                     ballCarrier = opponent;
-                    // System.out.print("\n" + ballCarrier.name + " hat den Ball!");
                     // Swap Teams
                     bonus = 0;
                     temporaryTeam = defendingTeam;
@@ -317,7 +301,7 @@ public class Game {
                 System.out.print(" GOOOAAAL!!!");
                 team1.score++;
                 sortedPlayers1.get(counter).goals++;
-                goals.add(new Goal(rounds, "Tor " + team1.score + ":" + team2.score, sortedPlayers1.get(counter).name, team1.longName, true));
+                goals.add(new Goal(rounds, team1.score + ":" + team2.score, sortedPlayers1.get(counter).name, team1.longName, true));
             } else if (isShootingSuccessful && isCatchingSuccessful) {
                 System.out.print(" Schöner Schuss! Aber " + goalKeeper2.name + " fängt den Ball!");
             } else {
@@ -338,7 +322,7 @@ public class Game {
                 System.out.print(" GOOOAAAL!!!");
                 team2.score++;
                 sortedPlayers2.get(counter).goals++;
-                goals.add(new Goal(rounds, "Tor " + team1.score + ":" + team2.score, sortedPlayers2.get(counter).name, team2.longName, true));
+                goals.add(new Goal(rounds, team1.score + ":" + team2.score, sortedPlayers2.get(counter).name, team2.longName, true));
             } else if (isShootingSuccessful && isCatchingSuccessful) {
                 System.out.print(" Schöner Schuss! Aber " + goalKeeper1.name + " fängt den Ball!");
             } else {
@@ -380,11 +364,35 @@ public class Game {
         System.out.println("└--------------------------------┴--------------------------------┘\n");
     }
 
+    // DISPLAY GOALS
+    static void displayGoals(List<Goal> goals) {
+        System.out.println("\n┌----------------------------------------------------------------------------------------------------┐");
+        System.out.println("│                                             Tore                                                   │");
+        System.out.println("├------┬-------------------┬--------------------------------┬-----------------------------┬----------┤");
+        for (Goal goal : goals) {
+            if (goal.isPenalty) {
+                System.out.printf("%1s %4s %1s %17s %1s %30s %1s %27s %1s %8s %1s%n", "│", goal.standing, "│", goal.minute + ". Spielminute", "│", goal.playerName, "│", goal.clubName, "│", "Elfmeter", "│");
+            } else {
+                System.out.printf("%1s %4s %1s %17s %1s %30s %1s %27s %1s %8s %1s%n", "│", goal.standing, "│", goal.minute + ". Spielminute", "│", goal.playerName, "│", goal.clubName, "│",  "    ", "│");
+            }
+        }
+        System.out.println("└------┴-------------------┴--------------------------------┴-----------------------------┴----------┘\n");
+
+        //Tore:
+        //72. Spielminute, Tor 0:1, Eliseo Guinn (#  9), Udinese
+    }
+
     static void displayGameEvents(){
         // TODO refactor prints here
         // there are many ways to make commentary more varied and built from random blocks
         // if this is done, many actions which are the same for different results could be refactored too
         // as only the commentaries are different
         // TODO OPTION to display calculated values
+        // TODO Modify System.out.print lines to this format: perhaps without the Team part
+        // 121. Minute │ Team * │ Team # │ 1:1 │ >>> Tavon Bermudez (* 11) schießt..... Er schießt daneben!
+        // 122. Minute │ Team * │ Team # │ 1:1 │ >>> Stetson Shoemaker (#  9) schießt..... Er schießt daneben!
+        // 123. Minute │ Team * │ Team # │ 1:1 │ >>> Gannon Craven (*  5) schießt..... GOOOAAAL!!!
+        // 124. Minute │ Team * │ Team # │ 2:1 │ >>> Grant Willett (#  1) schießt..... Er schießt daneben!
+        // 125. Minute │ Team * │ Team # │ 2:1 │ >>> Rashad Alexander (*  8) schießt..... Er schießt daneben!
     }
 }

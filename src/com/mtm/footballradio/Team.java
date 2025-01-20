@@ -75,8 +75,9 @@ public class Team {
 
     // DISPLAY Team Members and skills
     public void displayTeam() {
-        System.out.println("\n" + this.name + " - " + this.longName);
-        System.out.println("┌------------------------------------┬-------┬-------┬--------┬-------┬-------┐");
+        System.out.println("┌--------------┬--------------------------------------------------------------┐");
+        System.out.printf("%1s %10s %4s %-58s %3s","│", this.name, "│ ", this.longName, "│\n");
+        System.out.println("├--------------┴---------------------┬-------┬-------┬--------┬-------┬-------┤");
         System.out.println("│         Name (Team Nummer)         │ Schuß │ Pass  │Dribbeln│Abwehr │Fangen │");
         System.out.println("├------------------------------------┼-------┼-------┼--------┼-------┼-------┤");
         for (Player each : players){
@@ -89,8 +90,9 @@ public class Team {
 
     // DISPLAY Team Members with skills and goals
     public void displayTeamWithResults() {
-        System.out.println("\n" + this.name + " - " + this.longName + " - Tore: " + this.score);
-        System.out.println("┌------------------------------------┬-------┬-------┬--------┬-------┬-------┬-------┐");
+        System.out.println("┌--------------┬---------------------------------------------------┬----------┬-------┐");
+        System.out.printf("%1s %10s %4s %-46s %3s %6s %3s %4d %3s","│", this.name, "│ ", this.longName, "│", "Tore", "│", this.score, "│\n");
+        System.out.println("├--------------┴---------------------┬-------┬-------┬--------┬----┴--┬-------┼-------┤");
         System.out.println("│         Name (Team Nummer)         │ Schuß │ Pass  │Dribbeln│Abwehr │Fangen │ Tore  │");
         System.out.println("├------------------------------------┼-------┼-------┼--------┼-------┼-------┼-------┤");
         for (Player each : players){
