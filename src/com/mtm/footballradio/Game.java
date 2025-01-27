@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
+// FIXME Problems replacement (same substitute is used for two players
 // TODO TEST actionPenalty with chance calculations
-// FIXME why 92 minutes of play?
 // TODO DISPLAY OPTIONS
 // TODO REFACTOR
 // TODO Language EN & DE SWITCH
@@ -49,7 +50,8 @@ public class Game {
         team1.displayTeam();
         team2.displayTeam();
         System.out.print("Platzieren Sie Ihre Wetten, dann Bitte drücken Sie Enter um fortzufahren...\n\n");
-        System.in.read();
+        speed = 100;
+        // FIXME System.in.read();
         // Determine starting Team
         if (coinFlip()) {
             startingTeam = team1;
@@ -63,7 +65,7 @@ public class Game {
         // Select random Player to start kickoff
         ballCarrier = attackingTeam.getRandomFieldPlayerInPlay();
         // DISPLAY START
-        Match(0,45, speed);
+        Match(1,45, speed);
         System.out.print("\n>>> Pfeife!!! Es ist Halbzeit!\n");
         Game.displayStanding(team1,team2);
         Thread.sleep(4000 / speed);
@@ -80,14 +82,14 @@ public class Game {
         ballCarrier = attackingTeam.getRandomFieldPlayerInPlay();
         // DISPLAY START
         System.out.println(">>> Die zweite Halbzeit beginnt!");
-        Match(45,45, speed);
+        Match(46,45, speed);
         // DISPLAY END RESULT TODO Refactor END
         System.out.print("\n>>> Pfeife!!! Das Spiel ist vorbei!\n");
         Game.displayStanding(team1,team2);
         if (team1.score > team2.score) {
-            System.out.print("\n>>> " + team1.longName + " hat gewonnen!\n\n");
+            System.out.print("\n>>> " + Main.C_GREEN + team1.longName + Main.C_RESET + " hat gewonnen!\n\n");
         } else if (team2.score > team1.score){
-            System.out.print("\n>>> " + team2.longName + " hat gewonnen!\n\n");
+            System.out.print("\n>>> " + Main.C_GREEN + team2.longName + Main.C_RESET + " hat gewonnen!\n\n");
         } else {
             System.out.print("\n>>> Es ist ein Unentschieden!");
             Thread.sleep(2000 / speed);
@@ -101,7 +103,7 @@ public class Game {
             }
             ballCarrier = attackingTeam.getRandomFieldPlayerInPlay();
             // DISPLAY START
-            Match(90,15, speed);
+            Match(91,15, speed);
             System.out.print("\n>>> Pfeife!!! Die erste Hälfte der Verlängerung ist beendet!\n");
             Game.displayStanding(team1,team2);
             Thread.sleep(2000 / speed);
@@ -119,26 +121,26 @@ public class Game {
             // Select random Player to start kickoff TODO Refactor START
             ballCarrier = attackingTeam.getRandomFieldPlayerInPlay();
             // DISPLAY START
-            Match(105,15, speed);
+            Match(106,15, speed);
             // DISPLAY END RESULT TODO Refactor END
             System.out.print("\n>>> Pfeife!!! Ende der Verlängerung!\n");
             Game.displayStanding(team1,team2);
             if (team1.score > team2.score) {
-                System.out.print("\n>>> " + team1.longName + " hat gewonnen!\n\n");
+                System.out.print("\n>>> " + Main.C_GREEN + team1.longName + Main.C_RESET + " hat gewonnen!\n\n");
             } else if (team2.score > team1.score){
-                System.out.print("\n>>> " + team2.longName + " hat gewonnen!\n\n");
+                System.out.print("\n>>> " + Main.C_GREEN + team2.longName + Main.C_RESET + " hat gewonnen!\n\n");
             } else {
                 System.out.print("\n>>> Es ist ein Unentschieden!\n");
                 Thread.sleep(2000 / speed);
                 System.out.print("\n>>> Das Elfmeterschießen beginnt!.\n");
                 Thread.sleep(2000 / speed);
-                Penalty(120, speed);
+                Penalty(121, speed);
                 System.out.print("\n>>> Ende des Elfmeterschießens!\n");
                 Game.displayStanding(team1, team2);
                 if (team1.score > team2.score) {
-                    System.out.print("\n>>> " + team1.longName + " hat gewonnen!\n\n");
-                } else if (team2.score > team1.score) {
-                    System.out.print("\n>>> " + team2.longName + " hat gewonnen!\n\n");
+                    System.out.print("\n>>> " + Main.C_GREEN + team1.longName + Main.C_RESET + " hat gewonnen!\n\n");
+                } else if (team2.score > team1.score){
+                    System.out.print("\n>>> " + Main.C_GREEN + team2.longName + Main.C_RESET + " hat gewonnen!\n\n");
                 } else {
                     System.out.print("\n>>> Es ist ein Unentschieden!\n");
                     // This should never happen!
@@ -157,7 +159,7 @@ public class Game {
     //  => just realised timeInPlay must not be 0 too
     public void Match(int startingMinute, int length, int speed) throws InterruptedException {
         System.out.print("\n>>> " + ballCarrier.name + " von " + attackingTeam.longName + " hat Anstoß!");
-        for (int minutes = startingMinute; minutes <= startingMinute+length; minutes ++) {
+        for (int minutes = startingMinute; minutes < startingMinute+length; minutes ++) {
             // CHECK Injuries & REPLACE Injured Players
             checkInjuriesForTeam(team1);
             replaceInjuredPlayersForTeam(team1);
@@ -193,7 +195,7 @@ public class Game {
                     // opponent Team's Goal Keeper has a chance to Catch the Ball
                     opponentKeeper = defendingTeam.getGoalkeeper();
                     if (!opponentKeeper.performAction(Player.ActionType.Catch, 0)){
-                        System.out.print(" GOOOAAAL!!! " + ballCarrier.name + " von " + attackingTeam.longName + " hat ein Tor geschossen!");
+                        System.out.print(Main.C_GREEN + " GOOOAAAL!!! " + Main.C_RESET + ballCarrier.name + " von " + attackingTeam.longName + " hat ein Tor geschossen!");
                         attackingTeam.score++;
                         ballCarrier.goals++;
                         ballCarrier.matchGoals++;
@@ -294,20 +296,26 @@ public class Game {
 
     // Penalty Shoot-out
     public void Penalty(int startingMinute, int speed) throws InterruptedException {
-        // TODO sort Players according to their shooting skill
         boolean draw = true;
         boolean isShootingSuccessful;
         boolean isCatchingSuccessful;
-        List<Player> sortedShooters1 = new ArrayList<>(team1.getPlayers());
-        sortedShooters1.sort((p1, p2) -> Integer.compare(p2.IW1, p1.IW1));
+        List<Player> sortedShooters1 = new ArrayList<>(team1.getPlayersInMatch());
+        // SORT healthy Players according to their Shooting skill
+        sortedShooters1 = sortedShooters1.stream()
+                .filter(p -> !p.isInjured)
+                .sorted((p1, p2) -> Integer.compare(p2.IW1, p1.IW1))
+                .collect(Collectors.toList());
         Player goalKeeper1 = team1.getGoalkeeper();
-        List<Player> sortedShooters2 = new ArrayList<>(team2.getPlayers());
-        sortedShooters2.sort((p1, p2) -> Integer.compare(p2.IW1, p1.IW1));
+        List<Player> sortedShooters2 = new ArrayList<>(team2.getPlayersInMatch());
+        sortedShooters2 = sortedShooters2.stream()
+                .filter(p -> !p.isInjured)
+                .sorted((p1, p2) -> Integer.compare(p2.IW1, p1.IW1))
+                .collect(Collectors.toList());
         Player goalKeeper2 = team2.getGoalkeeper();
-        int rounds = startingMinute + 1;
+        int rounds = startingMinute;
         int counter = 0;
         do {
-            System.out.print("\n" + rounds + ". Minute - " + team1.name + " - " + team2.name + " " + team1.score + ":" + team2.score);
+            System.out.print("\n" + rounds + ". Minute - " + team1.score + ":" + team2.score + " -");
             System.out.print(" " + sortedShooters1.get(counter).name + " schießt");
             for (int i = 0; i < 5; i++) {
                 Thread.sleep(100 / speed);
@@ -316,7 +324,7 @@ public class Game {
             isShootingSuccessful = sortedShooters1.get(counter).performAction(Player.ActionType.Shoot, 0);
             isCatchingSuccessful = goalKeeper2.performAction(Player.ActionType.Catch, 0);
             if (isShootingSuccessful && !isCatchingSuccessful) {
-                System.out.print(" GOOOAAAL!!!");
+                System.out.print(Main.C_GREEN + " GOOOAAAL!!!" + Main.C_RESET);
                 team1.score++;
                 sortedShooters1.get(counter).goals++;
                 sortedShooters1.get(counter).matchGoals++;
@@ -329,7 +337,7 @@ public class Game {
             Thread.sleep(1000 / speed);
             rounds++;
             // Repeat with other Team
-            System.out.print("\n" + rounds + ". Minute - " + team1.name + " - " + team2.name + " " + team1.score + ":" + team2.score);
+            System.out.print("\n" + rounds + ". Minute - " + team1.score + ":" + team2.score + " -");
             System.out.print(" " + sortedShooters2.get(counter).name + " schießt");
             for (int i = 0; i < 5; i++) {
                 Thread.sleep(100 / speed);
@@ -338,10 +346,10 @@ public class Game {
             isShootingSuccessful = sortedShooters2.get(counter).performAction(Player.ActionType.Shoot, 0);
             isCatchingSuccessful = goalKeeper1.performAction(Player.ActionType.Catch, 0);
             if (isShootingSuccessful && !isCatchingSuccessful) {
-                System.out.print(" GOOOAAAL!!!");
+                System.out.print(Main.C_GREEN + " GOOOAAAL!!!" + Main.C_RESET);
                 team2.score++;
                 sortedShooters2.get(counter).goals++;
-                sortedShooters1.get(counter).matchGoals++;
+                sortedShooters2.get(counter).matchGoals++;
                 goals.add(new Goal(rounds, team1.score + ":" + team2.score, sortedShooters2.get(counter).name, team2.longName, true));
             } else if (isShootingSuccessful && isCatchingSuccessful) {
                 System.out.print(" Schöner Schuss! Aber " + goalKeeper1.name + " fängt den Ball!");
@@ -355,7 +363,7 @@ public class Game {
                 // if all Players have shot, start again
                 counter = 0;
             }
-        } while (rounds < 132 || (team1.score == team2.score && rounds >= 132)); // FIXME if after 5 Players from each Team have taken a shot and it is not a draw then exit
+        } while (rounds < 132 || (team1.score == team2.score && rounds >= 132));
     }
 
     static class Goal {
@@ -411,8 +419,8 @@ public class Game {
                     player.isInjured = true;
                     //player.isInPlay = false; // we need this condition for the replacement
                     player.status = "Verletzt";
-                    // DISPLAY Injury
-                    System.out.print("\n>>> " + player.name + " wurde verletzt!");
+                    // DISPLAY Injury => Commented out as I find it too verbose, and I include details in Replace method
+                    // System.out.print(" " + Main.C_RED + player.name + Main.C_RESET + " wurde verletzt!");
                 }
             }
         }
@@ -435,7 +443,7 @@ public class Game {
                             substitute.isInPlay = true;
                             substitute.status = "In Spiel";
                             team.removePlayerFromSubstitutes(substitute);
-                            System.out.print(" " + substitute.name + " wurde als Ersatz für " + player.name + " eingestellt.");
+                            System.out.print(" " + Main.C_RED + player.name + Main.C_RESET + " ist verletzt, " + Main.C_YELLOW + substitute.name + Main.C_RESET + " wird ihn ersetzen.");
                             continue TeamLoop;
                         }
                     }
@@ -448,7 +456,7 @@ public class Game {
                 } else if (player.isGoalkeeper) {
                     // TODO Technically would be better to bring back the other injured Goalkeeper
                     player.injury = player.injury - 25; // further increase his penalty
-                    System.out.print(" Da sich " + player.name + " erneut verletzt hat, wird er es schwer haben zu spielen.");
+                    System.out.print(" " + Main.C_RED + player.name + Main.C_RESET + " erneut verletzt hat, wird er es schwer haben zu spielen.");
                     continue;
                 }
                 // FIND Substitute for field Player
@@ -459,7 +467,7 @@ public class Game {
                         substitute.isInPlay = true;
                         substitute.status = "In Spiel";
                         team.removePlayerFromSubstitutes(substitute);
-                        System.out.print(" " + substitute.name + " wurde als Ersatz für " + player.name + " eingestellt.");
+                        System.out.print(" " + Main.C_RED + player.name + Main.C_RESET + " ist verletzt, " + Main.C_YELLOW + substitute.name + Main.C_RESET + " wird ihn ersetzen.");
                         break;
                     }
                 }

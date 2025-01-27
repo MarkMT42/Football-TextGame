@@ -160,6 +160,16 @@ public class Team {
         return players;
     }
 
+    // Get all Players on the Match
+    public List<Player> getPlayersInMatch() {
+        return playersInMatch;
+    }
+
+    // Get all Players on the Field
+    public List<Player> getPlayersInPlay() {
+        return playersInPlay;
+    }
+
     // Get amount of Players in Play
     public int getAmountOfPlayersInPlay() {
         return (int) playersInMatch.stream()
