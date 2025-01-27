@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-// TODO implement actionPenalty into chance calculations
+// TODO TEST actionPenalty with chance calculations
 // FIXME why 92 minutes of play?
 // TODO DISPLAY OPTIONS
 // TODO REFACTOR
@@ -420,34 +420,45 @@ public class Game {
 
     // REPLACE Injured Players
     static void replaceInjuredPlayersForTeam(Team team) {
+        // LOOP through the entire Team
+        TeamLoop:
         for (Player player : team.getPlayers()) {
+            // FIND Players who are on the field and injured
             if (player.isInPlay && player.isInjured) {
-                // Find substitute for Player
-                if (player.isGoalkeeper && player.injury != -25) { // we need to check if we have already tried to replace him but couldn't
+                // FIND substitute for injured Player
+                if (player.isGoalkeeper && player.injury == 0) { // we need to check if we have already tried to replace him but couldn't
                     // Check if there is a Substitute Goalkeeper
                     for (Player substitute : team.getSubstitutes()) {
-                        if (substitute.isGoalkeeper) {
+                        if (substitute.isGoalkeeper) { // TODO Refactor into 1 with field players with extra parameter isGoalkeeper
+                            // SWAP Players
                             player.isInPlay = false;
                             substitute.isInPlay = true;
                             substitute.status = "In Spiel";
+                            team.removePlayerFromSubstitutes(substitute);
                             System.out.print(" " + substitute.name + " wurde als Ersatz für " + player.name + " eingestellt.");
-                            break;
+                            continue TeamLoop;
                         }
                     }
-                    // FIXME the code comes here even for the first goalkeeper change
                     // No Substitute Goalkeeper is found => TODO Team can't play ?
-                    // Leave Goalkeeper in play with 25% penalty to his skills ?
-                    // player.isInPlay = true;
-                    player.setInjury(-25);
-                    System.out.print(" Da es keinen Ersatztorhüter gibt, wird " + player.name + " als verletzt (mit Strafstoß) weiterspielen.");
+                    // Leave Goalkeeper in play with 25% penalty to his skills ?!
+                    player.isInPlay = true; // this is not necessary, but makes it clear he stays in play
+                    player.injury = -25;
+                    System.out.print(" Da es keinen Ersatztorhüter gibt, wird " + player.name + " als verletzt (mit Hindernis) weiterspielen.");
+                    continue;
+                } else if (player.isGoalkeeper) {
+                    // TODO Technically would be better to bring back the other injured Goalkeeper
+                    player.injury = player.injury - 25; // further increase his penalty
+                    System.out.print(" Da sich " + player.name + " erneut verletzt hat, wird er es schwer haben zu spielen.");
                     continue;
                 }
-                // Substitute field Player
+                // FIND Substitute for field Player
                 for (Player substitute : team.getSubstitutes()) {
                     if (!substitute.isGoalkeeper) {
+                        // SWAP Players
                         player.isInPlay = false;
                         substitute.isInPlay = true;
                         substitute.status = "In Spiel";
+                        team.removePlayerFromSubstitutes(substitute);
                         System.out.print(" " + substitute.name + " wurde als Ersatz für " + player.name + " eingestellt.");
                         break;
                     }

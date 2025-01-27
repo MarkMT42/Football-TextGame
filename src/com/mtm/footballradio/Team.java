@@ -90,13 +90,13 @@ public class Team {
     }
 
     // ASSEMBLE Team
-    // TODO if no Goalkeepers are healthy Team can't play ?
-    // TODO Goalkeepers should be sorted according to their catch skill
+    // TODO if no Goalkeepers are healthy => Team can't play ?
     public List<Player> assembleTeam() {
         int goalkeeperCount = 0;
         int playerCount = 0;
         int inPlayPlayerCount = 0;
         List<Player> sortedPlayers = new ArrayList<>(getPlayers());
+        // SORT Goalkeepers according to their Catch skill
         sortedPlayers.sort((p1, p2) -> Integer.compare(p2.IW5, p1.IW5));
         // Add first as InPlay Goalkeeper & Add second as substitute goalkeeper
         for (Player player : sortedPlayers) {
@@ -120,7 +120,7 @@ public class Team {
                 }
             }
         }
-        // Then for the rest we have to make sure the player os not inPlay
+        // SORT according to AVG for the field players
         sortedPlayers.sort((p1, p2) -> Integer.compare(p2.AVG, p1.AVG));
         for (Player player : sortedPlayers) {
             // Each team can only take 11 + 3 Substitutes to a Match
@@ -148,6 +148,7 @@ public class Team {
             // This can only happen in the future with Tournaments
             // Team is unavailable
             // perhaps take an injured Goalkeeper with Penalty, like in play
+            // Or do they heal between matches?
             // TODO ASK Christoph! A solution would be that all players have Catch attribute and could substitute a Goalkeeper
             return null;
         }
@@ -173,6 +174,11 @@ public class Team {
             }
         }
         return substitutes;
+    }
+
+    // Remove Player from Substitutes
+    public void removePlayerFromSubstitutes(Player player) {
+        substitutes.remove(player);
     }
 
     // Get Methods to get Minimum of each attribute for the Players
