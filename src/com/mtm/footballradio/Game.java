@@ -50,8 +50,7 @@ public class Game {
         team1.displayTeam();
         team2.displayTeam();
         System.out.print("Platzieren Sie Ihre Wetten, dann Bitte drücken Sie Enter um fortzufahren...\n\n");
-        speed = 100;
-        // FIXME System.in.read();
+        System.in.read();
         // Determine starting Team
         if (coinFlip()) {
             startingTeam = team1;
